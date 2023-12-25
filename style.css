@@ -1,0 +1,174 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+html,
+body {
+    background: #fff;
+    padding: 10px;
+}
+img {
+    max-width: 100%;
+    height: auto;
+    vertical-align: middle;
+    display: inline-block;
+}
+.imageContainer > div {
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.imageContainer > div > img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;  
+}
+.imageContainer {
+    display: grid;
+    grid-gap: 10px;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    grid-auto-rows: 250px;
+    grid-auto-flow: dense;
+    grid-gap: 30px;
+}
+.imageContainer > div:nth-child(3),
+.imageContainer > div:nth-child(5)
+{
+    grid-row: span 2;
+}
+
+.imageContainer > div:nth-child(4),
+.imageContainer > div:nth-child(8),
+.imageContainer > div:nth-child(9)   {
+    grid-column: span 2;
+}
+.overlay {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    z-index: 1000;
+    padding-left: 70px;
+    padding-right: 70px;
+    padding-top: 20px;
+    overflow-y: auto;
+}
+
+.overlay-image {
+    padding: 0px;
+}
+
+.image-container-overlay {
+    border: 1px solid #625858;
+    border-radius: 11px;
+    background-color: #fff;
+    position: relative;
+    
+}
+
+.overlay-image {
+    padding: 30px 72px;
+    height: auto;
+    max-height: 100vh; /* Set a maximum height if needed */
+    width: 100%;
+    display: block;
+    margin: 0 auto;
+}
+
+.blurred {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    opacity: 0.7; /* Apply blur to the container content */
+    z-index: 999; /* Ensure the blurred content is behind the overlay */
+}
+
+.close-btn {
+    position: absolute;
+    top: 25px;
+    background-color: rgba(255, 255, 255, 0.7); /* Semi-transparent background */
+    color: #000;
+    cursor: pointer;
+    font-size: 24px;
+    left: 25px;
+}
+
+.nav-btn {
+    cursor: pointer;
+    font-size: 45px;
+    color: #333;
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background-color: rgba(255, 255, 255, 0.7); /* Semi-transparent background */
+    padding: 10px;
+}
+
+.next-btn {
+    right: 20px;
+}
+
+.prev-btn {
+    left: 20px;
+}
+
+.header {
+    padding: 13px 20px;
+    align-items: center;
+    display: flex;
+    gap: 8px;
+}
+.details{
+    cursor: pointer;    
+    flex-basis: 200px;
+    flex-grow: 1;
+    min-width: 0;
+}
+.download{
+    display: flex;
+    gap: 15px;
+}
+
+.like, .add, .share{
+    cursor: pointer;
+    align-items: center;
+    display: inline-flex;
+    background-color: #fff;
+    border-color: #d1d1d1;
+    color: #767676;
+    height: 32px;
+    padding: 0 11px;
+    border-radius: 4px;
+}
+
+@media screen and (max-width: 700px) {
+    .imageContainer {
+        grid-template-columns: 1fr; /* Set to a single column for screens less than 700px */
+    }
+    .imageContainer > div:nth-child(3),
+    .imageContainer > div:nth-child(5),
+    .imageContainer > div:nth-child(4),
+    .imageContainer > div:nth-child(8),
+    .imageContainer > div:nth-child(9) {
+        grid-row: auto;
+        grid-column: auto;
+    }  
+}
+
+@media screen and (max-width: 800px) {
+    .overlay {
+        padding-left: 10px !important;
+        padding-right: 10px !important;
+        padding-top: 30px !important;;
+    }
+    .nav-btn {
+        display: none;
+    }
+    .overlay-image {
+        padding: 0px !important;
+    }
+    .close-btn {
+        top: 0px !important;
+    }
+}  

@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image Gallery</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+</head>
+<body>
+
+    <div class="imageContainer" id="imageContainer"></div>
+
+    <script>
+        const unsplashApiKey = 'KS82xKnBDOAfLCS0Wf00gQIrOo4GAnq7uvibMtbzqdc';
+        const apiUrl = `https://api.unsplash.com/photos/random?count=10&client_id=${unsplashApiKey}`;
+        $(document).ready(function() {
+
+            var imageContainer = $("#imageContainer");
+            var currentIndex; 
+        
+            $.ajax({
+                url: apiUrl,
+                method: 'GET',
+                dataType: 'json',
+                success: function(data) {
+                    var imageDatas = data.map(function(item) {
+                        return {
+                            url: item.urls.regular,
+                            details: item.alt_description || "No details available"
+                        };
+                    });
+
+                    // Loop through the image datas and create image divs
+                    $.each(imageDatas, function(index) {
+                        var imageDiv = $("<div>").addClass("imageDiv");
+
+                        var imgTag = $("<img>").attr({
+                            "src": imageDatas[index].url,
+                            "alt": "Image " + (index + 1),
+                            "class": "myImage"+ (index + 1), 
+                            "data-meta": imageDatas[index].details,  
+                            "data-index": index  
+                        });
+
+                        
+                        imageDiv.append(imgTag);
+                        imageContainer.append(imageDiv);
+
+                        //click event to show overlay
+                        imgTag.on('click', function() {
+                            currentIndex = $(this).data('index');
+
+                            var overlay = $("<div>").addClass("overlay");
+                            var closeButton = $("<div>").addClass("close-btn").html('<i class="fa fa-close"></i>');
+
+                            var imageContainerOverlay = $("<div>").addClass("image-container-overlay");
+
+                            var overlayImage = $("<img>").attr({
+                                "src": $(this).attr('src'),
+                                "alt": "Image " + (currentIndex + 1),
+                                "class": "overlay-image"
+                            });
+
+                            // Create next and previous buttons
+                            var nextButton = $("<div>").addClass("nav-btn next-btn").html("<i class='fa fa-angle-right'></i>");
+                            var prevButton = $("<div>").addClass("nav-btn prev-btn").html("<i class='fa fa-angle-left'></i>");
+
+                            var headerDiv = $("<div>").addClass("header");
+                            var details = $("<div>").addClass("details").text($(this).data('meta')); 
+                            var download = $("<div>").addClass("download");
+                            var like = $("<button>").addClass("like").html('<i class="fa fa-heart" aria-hidden="true"></i>');
+                            var add = $("<button>").addClass("add").html("<i class='fa fa-plus'></i>");
+                            var share = $("<button>").addClass("share").text("Download");
+
+                            download.append(like, add, share);
+                            headerDiv.append(details, download);
+                
+                            imageContainerOverlay.append(headerDiv, overlayImage);
+
+                            overlay.append(closeButton, imageContainerOverlay, nextButton, prevButton);
+
+                            $("body").append(overlay);
+                            imageContainer.addClass("blurred");
+
+                            // Attach click event to the close button
+                            closeButton.on('click', function() {
+                                overlay.remove();
+                                imageContainer.removeClass("blurred");
+                            });
+
+                            // Attach click event to the next button
+                            nextButton.on('click', function() {
+                                currentIndex = (currentIndex + 1) % imageDatas.length;
+                                console.log(currentIndex);
+                                updateOverlayContent();
+                            });
+
+                            // Attach click event to the previous button
+                            prevButton.on('click', function() {
+                                currentIndex = (currentIndex - 1 + imageDatas.length) % imageDatas.length;
+                                console.log(currentIndex);
+                                updateOverlayContent();
+                            });
+
+                            // Function to update the overlay content based on the current index
+                            function updateOverlayContent() {
+                                overlayImage.attr({
+                                    "src": imageDatas[currentIndex].url,
+                                    "alt": "Image " + (currentIndex + 1)
+                                });
+                                details.text(imageDatas[currentIndex].details);
+                            }
+            
+                        });
+                    });
+                },
+                error: function(error) {
+                    console.error('Error fetching images from Unsplash API:', error);
+                }     
+            });
+        });
+    </script>
+</body>
+</html>
